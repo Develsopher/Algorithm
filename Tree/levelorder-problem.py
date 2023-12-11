@@ -35,3 +35,14 @@ root.right.left = TreeNode(v=15)
 root.right.right = TreeNode(v=7)
 
 print(maxDepth(root))
+
+
+def maxDepthPostOrder(root):
+    if root is None:
+        return 0
+    left_depth = maxDepthPostOrder(root.left)
+    right_depth = maxDepthPostOrder(root.right)
+    return max(left_depth, right_depth) + 1
+
+
+print(maxDepth(root))
