@@ -1,44 +1,36 @@
 from collections import deque
 
 
-def numIslands(grid):
-    number_of_island = 0
+def shortestPath(grid):
+    shortest_path_len = -1
     row = len(grid)
     col = len(grid[0])
+
+    if grid[0][0] != 0 or grid[row - 1][col - 1] != 0:
+        return shortest_path_len
+
     visited = [[False] * col for _ in range(row)]
+    delta = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
 
-    def bfs(x, y):
-        dx = [-1, 1, 0, 0]
-        dy = [0, 0, -1, 1]
+    queue = deque()
+    queue.append((0, 0, 1))
+    visited[0][0] = True
 
-        visited[x][y] = True
-        queue = deque()
-        queue.append((x, y))
-        while queue:
-            cur_x, cur_y = queue.popleft()
-            for i in range(4):
-                next_x = cur_x + dx[i]
-                next_y = cur_y + dy[i]
-                if next_x >= 0 and next_x < row and next_y >= 0 and next_y < col:
-                    if grid[next_x][next_y] == "1" and not visited[next_x][next_y]:
-                        visited[next_x][next_y] = True
-                        queue.append((next_x, next_y))
+    while queue:
+        cur_r, cur_c, cur_len = queue.popleft()
+        if cur_r == row - 1 and cur_c == col - 1:
+            shortest_path_len = cur_len
+            break
 
-    for i in range(row):
-        for j in range(col):
-            if grid[i][j] == "1" and not visited[i][j]:
-                bfs(i, j)
-                number_of_island += 1
-    return number_of_island
+        for dr, dc in delta:
+            next_r = cur_c + dr
+            next_c = cur_c + dc
+            if row > next_r >= 0 and col > next_c >= 0:
+                if grid[next_r][next_c] == 0 and not visited[next_r][next_c]:
+                    queue.append((next_r, next_c, cur_len + 1))
+                    visited[next_r][next_c] = True
+    return shortest_path_len
 
 
-print(
-    numIslands(
-        grid=[
-            ["1", "1", "0", "0", "0"],
-            ["1", "1", "0", "0", "0"],
-            ["0", "0", "1", "0", "0"],
-            ["0", "0", "0", "1", "1"],
-        ]
-    )
-)
+grid = [[0, 0, 0], [1, 1, 0], [1, 1, 0]]
+print(shortestPath(grid))
